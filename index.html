@@ -24,7 +24,7 @@
   --f-num:"Barlow Semi Condensed","Roboto Condensed","Helvetica Neue",Arial,sans-serif;
   --f-logo:"Dela Gothic One","M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif;
 }
-[data-chap="basic"]{--chap:#F0A800} [data-chap="uti"]{--chap:#4FA8FF} [data-chap="mening"]{--chap:#8B6BFF} [data-chap="pneu"]{--chap:#12B886} [data-chap="bone"]{--chap:#FF8A3D} [data-chap="neo"]{--chap:#FF7FA4} [data-chap="ear"]{--chap:#20B2C9} [data-chap="skin"]{--chap:#E0334F} [data-chap="esbl"]{--chap:#6A3FC8}
+.case .resume{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;background:var(--chap,#6A3FC8);color:#fff;font-style:normal;font-size:10.5px;font-weight:800} [data-chap="basic"]{--chap:#F0A800} [data-chap="uti"]{--chap:#4FA8FF} [data-chap="mening"]{--chap:#8B6BFF} [data-chap="pneu"]{--chap:#12B886} [data-chap="bone"]{--chap:#FF8A3D} [data-chap="neo"]{--chap:#FF7FA4} [data-chap="ear"]{--chap:#20B2C9} [data-chap="skin"]{--chap:#E0334F} [data-chap="esbl"]{--chap:#6A3FC8}
 *{box-sizing:border-box}
 html{background:var(--body)}
 html,body{min-height:100%}
@@ -1753,7 +1753,12 @@ function render(){
   else if(state.screen==="case") CaseScreen();
   bgm(); window.scrollTo(0,0);
 }
-const go = (screen, extra) => { Object.assign(state, {screen}, extra||{}); render(); };
+/* 症例の途中でほかの画面へ行くときは、その場面を覚えておく（state.ret）。資料の画面の「もどる」で症例のその場面へ戻り、メニューからも「続きから」を選べる。 */
+const go = (screen, extra) => {
+  if(state.screen==="case" && screen!=="case" && run && run.id===state.caseId && CASE[state.caseId].steps[state.idx].type!=="end") state.ret={caseId:state.caseId, idx:state.idx, snap:run.snap};
+  Object.assign(state, {screen}, extra||{}); render(); };
+const back = () => state.ret ? resumeCase() : go("menu");
+function resumeCase(){ const r=state.ret; state.ret=null; if(r.snap) run=JSON.parse(r.snap); go("case", {caseId:r.caseId, idx:r.idx}); }
 
 /* ---------- タイトル ---------- */
 function Title(){
@@ -1791,7 +1796,7 @@ function Menu(){
   const p=prog();
   app.innerHTML = topBar("抗菌薬マスター") + `<div class="wrap">
     <div class="home-hero"><div class="ey">Case files</div><h1>犯人の菌を追え</h1><p>子どもの発熱を、検査で一歩ずつ解き明かす。初期治療は広めに、結果が出たら狭く。</p><img src="${ART("doctor_happy")}" alt=""></div>
-    <div class="list">${CASES.map((c,i)=>`<button class="case" data-chap="${c.id}" data-case="${c.id}"><span class="cthumb">${ptPic(c,(p[c.id]||{}).stars?"well":"sick")}</span><span class="tx"><i>${c.id==="basic"?"はじめに":"症例 "+i}</i><b>${c.title}</b><small>${c.pt.name}・${c.sub}</small></span><span class="st">${[1,2,3].map(k=>STAR((p[c.id]||{}).stars>=k)).join("")}</span></button>`).join("")}</div>
+    <div class="list">${CASES.map((c,i)=>`<button class="case" data-chap="${c.id}" data-case="${c.id}"><span class="cthumb">${ptPic(c,(p[c.id]||{}).stars?"well":"sick")}</span><span class="tx"><i>${c.id==="basic"?"はじめに":"症例 "+i}${state.ret&&state.ret.caseId===c.id?' <span class="resume">続きから</span>':""}</i><b>${c.title}</b><small>${c.pt.name}・${c.sub}</small></span><span class="st">${[1,2,3].map(k=>STAR((p[c.id]||{}).stars>=k)).join("")}</span></button>`).join("")}</div>
     <div class="sec-h">ふりかえり</div>
     <div class="list"><button class="case" data-go="map" style="--chap:#6A3FC8"><span class="pface" style="display:grid;place-items:center;background:#fff">${ICON.map}</span><span class="tx"><b>スペクトラム・マップ</b><small>薬を選ぶと、効く菌が光る</small></span></button>
     <button class="case" data-go="cards" style="--chap:#1E9E8A"><span class="pface" style="display:grid;place-items:center;background:#fff">${ICON.card}</span><span class="tx"><b>検査カード</b><small>${Object.keys(cardsGot()).length}/${Object.keys(CARDS).length} 枚</small></span></button>
@@ -1800,19 +1805,24 @@ function Menu(){
   </div>`;
   app.onclick = (e)=>{
     if(e.target.closest("[data-back]")) return go("title");
-    const c=e.target.closest("[data-case]"); if(c) return startCase(c.dataset.case);
+    const c=e.target.closest("[data-case]"); if(c){ const id=c.dataset.case;
+      if(state.ret && state.ret.caseId===id){ const m=openModal(`<h2 style="font-size:18px">${CASE[id].title}</h2><p class="lead">途中まで進めた症例です。</p><div class="row" style="margin-top:14px;gap:10px"><button class="btn go" id="rsm" style="flex:1">続きから</button><button class="btn" id="rst" style="flex:1">最初から</button></div>`);
+        m.querySelector("#rsm").onclick=()=>{ m.remove(); document.body.classList.remove("noscroll"); resumeCase(); };
+        m.querySelector("#rst").onclick=()=>{ m.remove(); document.body.classList.remove("noscroll"); startCase(id); };
+        return; }
+      return startCase(id); }
     const g=e.target.closest("[data-go]"); if(g) return go(g.dataset.go);
   };
 }
 function CardsScreen(){
   const got=cardsGot();
   app.innerHTML = topBar("検査カード") + `<div class="wrap"><p class="lead" style="margin-top:14px">症例の中で検査を使うと、カードが手に入る。</p><div class="cards">${Object.entries(CARDS).map(([k,v])=>got[k]?`<div class="card"><i>検査カード</i><b>${v[0]}</b><p>${v[1]}</p></div>`:`<div class="card locked"><i>？</i><b>まだ見つけていない</b><p>症例を進めると手に入る。</p></div>`).join("")}</div></div>`;
-  app.onclick = (e)=>{ if(e.target.closest("[data-back]")) go("menu"); };
+  app.onclick = (e)=>{ if(e.target.closest("[data-back]")) back(); };
 }
 function MapScreen(){
   const mode = store.get("mapmode","basic")==="x" ? "x" : "basic";
   app.innerHTML = topBar("スペクトラム・マップ", `<div class="seg" role="tablist"><button role="tab" data-mode="basic" aria-selected="${mode==="basic"}">基本<small>菌14・薬16</small></button><button role="tab" data-mode="x" aria-selected="${mode==="x"}">詳細<small>菌26・薬26・耐性菌</small></button></div>`) + `<div class="wrap"><div class="stage" id="mapHost"></div></div>`;
-  app.onclick = (e)=>{ if(e.target.closest("[data-back]")) return go("menu");
+  app.onclick = (e)=>{ if(e.target.closest("[data-back]")) return back();
     const m=e.target.closest("[data-mode]"); if(m && m.dataset.mode!==mode){ store.set("mapmode", m.dataset.mode); sfx("tap"); MapScreen(); window.scrollTo(0,0); } };
   const data = mode==="x" ? DATA_X : DATA_BASIC;
   SpectrumMap($("#mapHost"), {max:data.max, free:true, data});
@@ -1997,7 +2007,7 @@ function MechScreen(focus){
     $("#pknote").innerHTML = `<b>${P.name}（${P.sub}）</b>　${P.text}<br>${res}<br><small>1日の総量は同じにしてある。</small>`;
   };
   app.onclick = (e)=>{
-    if(e.target.closest("[data-back]")) return go("menu");
+    if(e.target.closest("[data-back]")) return back();
     const g=e.target.closest("[data-gram]"); if(g){ gram=g.dataset.gram; sfx("tap"); drawCell(); return; }
     const d=e.target.closest("[data-drugcard]"); if(d){ openDrugCard(d.dataset.drugcard); return; }
     const m=e.target.closest("[data-moa]"); if(m && m.closest("#cellHost,#mtabs")){ on=m.dataset.moa; sfx("tap"); drawCell(); return; }
@@ -2090,7 +2100,7 @@ function ResScreen(){
   };
   reset(); drawSim("ボタンを押して、何日か進めてみよう。");
   app.onclick = (e)=>{
-    if(e.target.closest("[data-back]")) return go("menu");
+    if(e.target.closest("[data-back]")) return back();
     const s=e.target.closest("[data-sim]"); if(s){ act(s.dataset.sim); return; }
     const st=e.target.closest(".rstep"); if(st){ st.parentNode.querySelectorAll(".rstep").forEach(x=>x.classList.toggle("on", x===st)); sfx("tap"); return; }
     const b=e.target.closest("[data-bugcard]"); if(b){ openBugCard(b.dataset.bugcard); return; }
@@ -2160,6 +2170,7 @@ function SpectrumMap(host, opt){
    ===================================================================== */
 function startCase(id){
   const c=CASE[id];
+  state.ret=null;
   run = { id, axis:0, day:c.vit.day, vit:Object.assign({},c.vit), tears:0, flora:100, pts:{diag:[0,0], tx:[0,0], quiz:[0,0]}, cards:[] };
   go("case", {caseId:id, idx:0, intro:true});
 }
@@ -2203,6 +2214,7 @@ function nextBtn(label){ return `<div class="nextbar"><button class="btn go" dat
 
 function runStep(){
   const c=CASE[state.caseId], s=c.steps[state.idx], st=$("#stage");
+  run.snap=null; run.snap=JSON.stringify(run);   // この場面のはじめの状態。途中で離れて戻ったら、ここからやり直す
   if(s.day!=null) run.day=s.day; if(s.vit){ Object.assign(run.vit, s.vit); const f=$("#ptface"); if(f) f.innerHTML=ptPic(c, run.vit.t>=37.8?"sick":"well"); } drawVitals(); drawAxes(s.axis);
   const T = STEP[s.type]; T(s, st, c);
   st.addEventListener("click", e=>{ if(e.target.closest("[data-next]")){ if(s.card && s.type!=="choice" && !s.q) gainCard(s.card); nextStep(); } });
