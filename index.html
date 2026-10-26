@@ -1338,7 +1338,7 @@ const CASES = [
       {t:"鼻の奥（上咽頭）を綿棒でぬぐい、痰の代わりに培養に出す", fb:"鼻やのどには健康な子でも肺炎球菌やインフルエンザ菌がいる。肺炎の犯人とは限らない。"},
       {t:"まず抗菌薬を始め、熱が下がって咳が落ち着いた翌朝に、たまった痰をまとめて採る", fb:"抗菌薬のあとは菌が死んで培養が陰性になりやすい。培養は抗菌薬の前に。"}
     ]},
-    {type:"choice", card:"sputum", ask:"採れた痰を弱拡大（100倍）で見ると、1視野に扁平上皮が5個、白血球が30個以上。ゲックラー分類と評価は？", opts:[
+    {type:"choice", card:"sputum", hint:`<p class="cxn"><b>ゲックラー分類</b>は、痰を顕微鏡の弱拡大（100倍）で見て、1視野の<b>扁平上皮</b>（口の粘膜の細胞＝唾液のしるし）と<b>白血球</b>（膿＝肺の炎症のしるし）を数え、痰の質を1〜6群に分ける方法。扁平上皮が少なく白血球が多いほど、肺の奥から来たよい痰。</p>${tb(["群","扁平上皮","白血球","評価"],[["1","＞25","＜10","不良"],["2","＞25","10〜25","不良"],["3","＞25","＞25","不良"],["<b>4</b>","10〜25","＞25","<b>良質</b>"],["<b>5</b>","＜10","＞25","<b>良質</b>"],["6","＜25","＜25","判定しない"]])}<p class="cxn">数は1視野あたりの個数。</p>`, ask:"表を見ながら考えよう。採れた痰を弱拡大（100倍）で見ると、1視野に扁平上皮が5個、白血球が30個以上。ゲックラー分類と評価は？", opts:[
       {t:"5群。良質な検体なので、グラム染色と培養を評価してよい", ok:true, fb:"そのとおり。扁平上皮10個未満・白血球25個以上は5群。4・5群が良質。口の細胞が少なく、肺の炎症の場所から来た痰。"},
       {t:"3群。白血球は多いが唾液も混じるので、評価は控えめに", fb:"3群は扁平上皮が25個を超えるとき。ここは5個なので少ない。"},
       {t:"4群。扁平上皮があるので、良質とは言えない", fb:"4群は扁平上皮10〜25個。5個なら5群。どちらも良質に入る。"},
@@ -2325,7 +2325,7 @@ function runStep(){
 function shuffled(n){ const a=[...Array(n).keys()]; for(let i=n-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 /* 選択問題（汎用）。onRight は正解したとき。初回で正解なら満点。 */
 function quiz(host, q, cat, onRight){
-  const box=document.createElement("div"); box.className="sheet"; box.innerHTML=`<h2 style="font-size:16px">${q.ask}</h2><div class="opts" style="margin-top:10px">${shuffled(q.opts.length).map(i=>`<button class="opt" data-i="${i}">${q.opts[i].t}</button>`).join("")}</div><div class="cslot" style="margin-top:12px"></div>`;
+  const box=document.createElement("div"); box.className="sheet"; box.innerHTML=`${q.hint?`<div class="qhint" style="margin-bottom:12px;font-size:13px">${q.hint}</div>`:""}<h2 style="font-size:16px">${q.ask}</h2><div class="opts" style="margin-top:10px">${shuffled(q.opts.length).map(i=>`<button class="opt" data-i="${i}">${q.opts[i].t}</button>`).join("")}</div><div class="cslot" style="margin-top:12px"></div>`;
   host.appendChild(box);
   let tries=0, done=false; run.pts[cat||"quiz"][1]+=2;
   box.addEventListener("click", e=>{ const b=e.target.closest(".opt"); if(!b||done) return; const o=q.opts[+b.dataset.i]; tries++;
