@@ -2484,7 +2484,7 @@ const STEP = {
       <div class="cslot" style="margin-top:10px"></div></div><div id="qhost"></div>`;
     const cv=$("#xc",st); drawXray(cv, false); let found=false;
     cv.addEventListener("click", e=>{ if(found) return; const r=cv.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width*320, y=(e.clientY-r.top)/r.height*320;
-      if(x>40 && x<150 && y>175 && y<265){ found=true; drawXray(cv, true); sfx("confirm"); st.querySelector(".cslot").innerHTML=coachHTML("happy","見つけた！ 向かって左下（患者の右下）に白い影。横隔膜の丸い線がそこで消えている。","ok"); quiz($("#qhost",st), s.q, "quiz", ()=>{ gainCard(s.card); st.insertAdjacentHTML("beforeend", nextBtn()); }); }
+      if(x>38 && x<134 && y>160 && y<262){ found=true; drawXray(cv, true); sfx("confirm"); st.querySelector(".cslot").innerHTML=coachHTML("happy","見つけた！ 向かって左下（患者の右下）に白い影。横隔膜の丸い線がそこで消えている。","ok"); quiz($("#qhost",st), s.q, "quiz", ()=>{ gainCard(s.card); st.insertAdjacentHTML("beforeend", nextBtn()); }); }
       else { sfx("miss"); st.querySelector(".cslot").innerHTML=coachHTML("think","そこは正常に見えるね。左右の肺の下のほうを比べてみよう。黒いはずの肺が白くなっているところは？","ng"); }
     });
   },
@@ -2663,7 +2663,15 @@ function drawSmear(cv, s){
     for(let k=0;k<n;k++){ x.fillStyle="#4B2A9A"; x.beginPath(); x.ellipse(px,py,2.2,1.9,a,0,7); x.fill(); a+=(R()-.5)*.5; px+=Math.cos(a)*4.6; py+=Math.sin(a)*4.6; } } }
   if(s.org==="gncb"){ for(let i=0;i<190;i++){ const [px,py]=near(); const a=R()*3.14; x.save(); x.translate(px,py); x.rotate(a); x.fillStyle="#D63A6C"; const l=2.6+R()*1.6; x.beginPath(); x.ellipse(0,0,l/2,1.2,0,0,7); x.fill(); x.restore(); } }
 }
+const XIMG=new Image(); XIMG.src="assets/xray_pneu.webp";
 function drawXray(cv, mark){
+  if(!XIMG.complete || !XIMG.naturalWidth){ XIMG.onload=()=>drawXray(cv, mark); return drawXrayProc(cv, mark); }
+  const [x, W, H] = prep(cv);
+  x.drawImage(XIMG,0,0,W,H);
+  if(mark){ x.strokeStyle="#FFD23F"; x.lineWidth=3; x.setLineDash([7,5]); x.beginPath(); x.ellipse(84,210,52,50,0,0,Math.PI*2); x.stroke(); x.setLineDash([]);
+    x.font="bold 13px sans-serif"; const t="右下葉の浸潤影"; const tw=x.measureText(t).width; x.fillStyle="rgba(0,0,0,.7)"; x.fillRect(132,262,tw+12,22); x.fillStyle="#FFD23F"; x.fillText(t,138,278); }
+}
+function drawXrayProc(cv, mark){
   const [x, W, H] = prep(cv);
   x.fillStyle="#0B0D12"; x.fillRect(0,0,W,H);
   // 体の外形
