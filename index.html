@@ -891,7 +891,7 @@ function kidFace(p){
 const pic = (src, fallback, alt) => `<span class="pic">${fallback}<img src="${src}" alt="${alt||""}" onload="this.parentNode.classList.add('ok')" onerror="this.remove()"></span>`;
 const ptPic = (c, mood) => pic(`assets/pt_${c.id}_${mood||"sick"}.webp`, kidFace(Object.assign({}, c.pt.face, {sick:mood!=="well"})), c.pt.name).replace('<span class="pic">',`<span class="pic" data-pt="${c.id}_${mood||"sick"}">`);
 /* 詳細版の耐性菌などは、近い菌の絵を借りる（「耐性」の札で区別する） */
-const BUGIMG = {spn:1,gas:1,gbs:1,mssa:1,mrsa:1,efc:1,hinf:1,ecoli:1,kleb:1,esbl:1,pae:1,lis:1,anae:1,myco:1, prsp:"spn",cns:"mssa",efm:"efc",vre:"efc",blpar:"hinf",blnar:"hinf",ampc:"ecoli",cre:"esbl",mrmp:"myco"};
+const BUGIMG = {spn:1,gas:1,gbs:1,mssa:1,mrsa:1,efc:1,hinf:1,ecoli:1,kleb:1,esbl:1,pae:1,lis:1,anae:1,myco:1,salmo:1,stec:1,vgs:1,bper:1, prsp:"spn",cns:"mssa",efm:"efc",vre:"efc",blpar:"hinf",blnar:"hinf",ampc:"ecoli",cre:"esbl",mrmp:"myco"};
 const bugPic = (b) => BUGIMG[b.id] ? pic(`assets/bug_${BUGIMG[b.id]===1?b.id:BUGIMG[b.id]}.webp`, bugIcon(b.shape,b.g), "") : `<span class="pic">${bugIcon(b.shape,b.g)}</span>`;
 const parentFace = () => kidFace({skin:"#FFE3CF",hair:"#5A3B2E",girl:true,sick:false,shirt:"#B79CFF",bg:"#F4EEFF"});
 
