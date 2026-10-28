@@ -24,7 +24,7 @@
   --f-num:"Barlow Semi Condensed","Roboto Condensed","Helvetica Neue",Arial,sans-serif;
   --f-logo:"Dela Gothic One","M PLUS Rounded 1c","Hiragino Maru Gothic ProN",sans-serif;
 }
-.case .resume{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;background:var(--chap,#6A3FC8);color:#fff;font-style:normal;font-size:10.5px;font-weight:800} [data-chap="basic"]{--chap:#F0A800} [data-chap="uti"]{--chap:#4FA8FF} [data-chap="mening"]{--chap:#8B6BFF} [data-chap="pneu"]{--chap:#12B886} [data-chap="bone"]{--chap:#FF8A3D} [data-chap="neo"]{--chap:#FF7FA4} [data-chap="ear"]{--chap:#20B2C9} [data-chap="skin"]{--chap:#E0334F} [data-chap="esbl"]{--chap:#6A3FC8}
+.case .resume{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;background:var(--chap,#6A3FC8);color:#fff;font-style:normal;font-size:10.5px;font-weight:800} [data-chap="basic"]{--chap:#F0A800} [data-chap="uti"]{--chap:#4FA8FF} [data-chap="mening"]{--chap:#8B6BFF} [data-chap="pneu"]{--chap:#12B886} [data-chap="bone"]{--chap:#FF8A3D} [data-chap="neo"]{--chap:#FF7FA4} [data-chap="ear"]{--chap:#20B2C9} [data-chap="skin"]{--chap:#E0334F} [data-chap="esbl"]{--chap:#6A3FC8} [data-chap="salmo"]{--chap:#7FA82A} [data-chap="stec"]{--chap:#B8672A}
 *{box-sizing:border-box}
 html{background:var(--body)}
 html,body{min-height:100%}
@@ -562,7 +562,7 @@ const DRUGS = [
 const DRUG = Object.fromEntries(DRUGS.map(d=>[d.id,d]));
 
 /* =====================================================================
-   詳細版スペクトラム・マップのデータ（菌26・薬26）と、菌図鑑の解説
+   詳細版スペクトラム・マップのデータ（菌28・薬26）と、菌図鑑の解説
    基本版（BUGS・DRUGS）は症例の中でも使うので、そのまま残す。
    cov の目安は学習用の単純化。実際は施設のアンチバイオグラムと感受性結果で決める。
    mech: blac＝薬を壊す / target＝的を変える / pump＝入れない・くみ出す / nat＝もともと効かない（自然耐性）
@@ -700,6 +700,16 @@ const XBUGS = [
     first:"感染症の専門家と相談。新しい薬（セフタジジム/アビバクタムなど）や、アミノグリコシド・コリスチンを組み合わせる。",
     res:"カルバペネマーゼ（KPC・NDM・IMP・OXA-48など）でカルバペネムまで壊す。ポーリンの減少とAmpC・ESBLの組み合わせで耐性になる株もある。日本ではIMP型が多い。",
     tip:"感染症法の全数報告対象。最後の切り札が効かない、もっとも警戒すべき耐性菌のひとつ。カルバペネムの使いすぎを防ぐのが最大の予防。"},
+  {id:"salmo", g:"neg", shape:"rod", name:"サルモネラ", en:"Salmonella（非チフス性）", kin:"ent2",
+    look:"グラム陰性桿菌。乳糖を分解せず、硫化水素をつくる。SS寒天で無色・中心が黒いコロニー。",
+    sites:"胃腸炎（発熱・血便）。乳児や免疫不全では菌血症・髄膜炎・骨髄炎。卵・鶏肉・カメなどの爬虫類から。",
+    first:"健康な子の胃腸炎は抗菌薬なし。3か月未満・免疫不全・菌血症では第3世代セフェム、感受性を見てアンピシリンなどへ。",
+    tip:"細胞の中に入りこむので、第1・第2世代セフェムとアミノグリコシドは試験管でS（感性）でも治療では効かない。軽い胃腸炎に抗菌薬を使うと、かえって菌を出す期間が長くなる。"},
+  {id:"stec", g:"neg", shape:"rod", name:"腸管出血性大腸菌", en:"STEC／O157", kin:"ent2",
+    look:"大腸菌の仲間で、志賀毒素（ベロ毒素）をつくる。O157はソルビトールを分解しないので、ソルビトール・マッコンキー寒天で無色のコロニー。",
+    sites:"強い腹痛と血便（熱は低め）。数日〜2週間後に溶血性尿毒症症候群（HUS）。牛肉の生焼け・生野菜・井戸水から。",
+    first:"抗菌薬で治す病気ではない。水分と合併症（HUS）の管理が中心。下痢止めは使わない。",
+    tip:"試験管ではいろいろな薬が効くが、抗菌薬で菌が壊れると毒素が出てHUSが増えるという報告がある（日本では発症早期のホスホマイシンを使う施設もある）。マップの◎は「治療に使う」という意味ではない。"},
   {id:"pae", g:"neg", shape:"rod", name:"緑膿菌", en:"P. aeruginosa", kin:"pae", mech:["pump","blac"],
     look:"グラム陰性桿菌（ブドウ糖を発酵しない）。緑色の色素とブドウのような甘いにおい。",
     sites:"人工呼吸器関連肺炎・カテーテル感染・やけど・嚢胞性線維症・発熱性好中球減少症。",
@@ -733,34 +743,34 @@ const XBUGS = [
     tip:"テトラサイクリン系は8歳未満では歯の着色などのため原則避ける。耐性でも自然に治る例は多く、全員に切り替えが必要なわけではない。"}
 ];
 const XBUG = Object.fromEntries(XBUGS.map(b=>[b.id,b]));
-/* 26菌の順：spn prsp gas gbs mssa mrsa cns efc efm vre lis hinf blpar blnar mcat nmen ecoli kleb esbl ampc cre pae anae cdi myco mrmp */
+/* 28菌の順（salmo・stec は cre のあと）：spn prsp gas gbs mssa mrsa cns efc efm vre lis hinf blpar blnar mcat nmen ecoli kleb esbl ampc cre pae anae cdi myco mrmp */
 const XC = (o) => { const r={}; XBUGS.forEach(b=>r[b.id]=0); return Object.assign(r,o); };
 const XDRUGS = [
   {id:"PCG", name:"ペニシリンG", route:"点滴", cls:"ペニシリン系", eco:1, cov:XC({spn:2,prsp:1,gas:2,gbs:2,efc:1,lis:2,nmen:2}), note:"いちばん狭いペニシリン。溶連菌・感受性のある肺炎球菌・髄膜炎菌に。グラム陰性桿菌にはほとんど効かない。"},
-  {id:"ABPC", name:"アンピシリン", route:"点滴", cls:"ペニシリン系", eco:1, cov:XC({spn:2,prsp:1,gas:2,gbs:2,efc:2,lis:2,hinf:2,nmen:2,ecoli:1}), note:"ペニシリンGより少し陰性菌側に広い。腸球菌・リステリアの基本薬。BLPAR・BLNARには効かない。"},
-  {id:"AMPC", name:"アモキシシリン", route:"内服", cls:"ペニシリン系", eco:1, cov:XC({spn:2,prsp:1,gas:2,gbs:2,efc:2,lis:2,hinf:2,nmen:1,ecoli:1}), note:"アンピシリンの飲み薬版で吸収がよい。高用量（80〜90 mg/kg/日）でPRSPの中耳炎や肺炎にも届く。"},
-  {id:"SBT/ABPC", name:"スルバクタム/アンピシリン", route:"点滴", cls:"ペニシリン系＋阻害薬", eco:2, cov:XC({spn:2,prsp:1,gas:2,gbs:2,mssa:2,efc:2,lis:2,hinf:2,blpar:2,mcat:2,nmen:1,ecoli:1,kleb:1,anae:2}), note:"阻害薬がβ-ラクタマーゼを止めるので、MSSA・BLPAR・モラクセラ・嫌気性菌に広がる。BLNARとMRSAは酵素ではないので効かない。"},
-  {id:"AMPC/CVA", name:"アモキシシリン/クラブラン酸", route:"内服", cls:"ペニシリン系＋阻害薬", eco:2, cov:XC({spn:2,prsp:1,gas:2,gbs:2,mssa:2,efc:2,lis:2,hinf:2,blpar:2,mcat:2,ecoli:1,kleb:1,anae:2}), note:"SBT/ABPCの飲み薬にあたる。動物咬傷・難治の中耳炎に。下痢が多い。"},
-  {id:"TAZ/PIPC", name:"タゾバクタム/ピペラシリン", route:"点滴", cls:"抗緑膿菌ペニシリン＋阻害薬", eco:4, cov:XC({spn:2,prsp:1,gas:2,gbs:2,mssa:2,efc:2,lis:1,hinf:2,blpar:2,blnar:1,mcat:2,nmen:1,ecoli:2,kleb:2,esbl:1,ampc:1,pae:2,anae:2}), note:"とても広い。緑膿菌と嫌気性菌まで。院内感染・発熱性好中球減少症・腹腔内感染の初期治療に。"},
-  {id:"CEZ", name:"セファゾリン", route:"点滴", cls:"第1世代セフェム", eco:1, cov:XC({spn:1,gas:2,gbs:2,mssa:2,cns:1,hinf:1,mcat:1,ecoli:1,kleb:1}), note:"MSSAの第一選択。感受性があれば大腸菌の尿路感染にも。髄液にはほとんど入らない。"},
-  {id:"CEX", name:"セファレキシン", route:"内服", cls:"第1世代セフェム", eco:1, cov:XC({gas:2,gbs:2,mssa:2,mcat:1,ecoli:1,kleb:1}), note:"吸収のよい内服セフェム。皮膚感染・骨関節感染の経口治療・尿路感染の仕上げに。"},
-  {id:"CMZ", name:"セフメタゾール", route:"点滴", cls:"セファマイシン系", eco:2, cov:XC({spn:1,gas:1,gbs:1,mssa:1,hinf:1,mcat:1,ecoli:2,kleb:2,esbl:2,anae:2}), note:"ESBLに壊されにくく、嫌気性菌にも効く。ESBL産生菌の軽症尿路感染で、カルバペネムを温存する選択肢。AmpCには壊される。"},
-  {id:"CTX", name:"セフォタキシム", route:"点滴", cls:"第3世代セフェム", eco:3, cov:XC({spn:2,prsp:2,gas:2,gbs:2,mssa:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,ampc:1}), note:"髄液によく入る。髄膜炎・重症の尿路感染・BLNARに。腸球菌・リステリア・ESBL・緑膿菌には効かない。"},
-  {id:"CTRX", name:"セフトリアキソン", route:"点滴", cls:"第3世代セフェム", eco:3, cov:XC({spn:2,prsp:2,gas:2,gbs:2,mssa:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,ampc:1}), note:"1日1〜2回でよく、外来点滴にも。新生児（黄疸・カルシウム輸液）では使わない。胆泥ができることがある。"},
-  {id:"CDTR-PI", name:"セフジトレン ピボキシル", route:"内服", cls:"経口第3世代セフェム", eco:3, cov:XC({spn:1,prsp:1,gas:2,gbs:1,mssa:1,hinf:2,blpar:2,blnar:2,mcat:2,ecoli:1,kleb:1}), note:"吸収率が低く（十数％）、体に入る量が少ない。ピボキシル基でカルニチンが減り、低血糖を起こすことがある。日本で使われすぎてきた薬の代表で、第一選択になる場面は少ない。"},
-  {id:"CAZ", name:"セフタジジム", route:"点滴", cls:"第3世代セフェム（抗緑膿菌）", eco:3, cov:XC({gas:1,gbs:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,ampc:1,pae:2}), note:"緑膿菌に効く第3世代。そのかわりグラム陽性菌（肺炎球菌・ブドウ球菌）には弱い。"},
-  {id:"CFPM", name:"セフェピム", route:"点滴", cls:"第4世代セフェム", eco:4, cov:XC({spn:2,prsp:2,gas:2,gbs:2,mssa:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,esbl:1,ampc:2,pae:2}), note:"陽性菌にも緑膿菌にも届く。AmpCに壊されにくいのでエンテロバクターに。発熱性好中球減少症の初期治療に。"},
-  {id:"MEPM", name:"メロペネム", route:"点滴", cls:"カルバペネム", eco:5, cov:XC({spn:2,prsp:2,gas:2,gbs:2,mssa:2,cns:1,efc:1,lis:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,esbl:2,ampc:2,pae:2,anae:2}), note:"最も広い切り札。ESBL・AmpCにも効く。使うほどCREとカルバペネム耐性緑膿菌を育てる。MRSA・VRE・マイコプラズマ・CREには効かない。"},
+  {id:"ABPC", name:"アンピシリン", route:"点滴", cls:"ペニシリン系", eco:1, cov:XC({salmo:1,stec:1,spn:2,prsp:1,gas:2,gbs:2,efc:2,lis:2,hinf:2,nmen:2,ecoli:1}), note:"ペニシリンGより少し陰性菌側に広い。腸球菌・リステリアの基本薬。BLPAR・BLNARには効かない。"},
+  {id:"AMPC", name:"アモキシシリン", route:"内服", cls:"ペニシリン系", eco:1, cov:XC({salmo:1,stec:1,spn:2,prsp:1,gas:2,gbs:2,efc:2,lis:2,hinf:2,nmen:1,ecoli:1}), note:"アンピシリンの飲み薬版で吸収がよい。高用量（80〜90 mg/kg/日）でPRSPの中耳炎や肺炎にも届く。"},
+  {id:"SBT/ABPC", name:"スルバクタム/アンピシリン", route:"点滴", cls:"ペニシリン系＋阻害薬", eco:2, cov:XC({salmo:1,stec:1,spn:2,prsp:1,gas:2,gbs:2,mssa:2,efc:2,lis:2,hinf:2,blpar:2,mcat:2,nmen:1,ecoli:1,kleb:1,anae:2}), note:"阻害薬がβ-ラクタマーゼを止めるので、MSSA・BLPAR・モラクセラ・嫌気性菌に広がる。BLNARとMRSAは酵素ではないので効かない。"},
+  {id:"AMPC/CVA", name:"アモキシシリン/クラブラン酸", route:"内服", cls:"ペニシリン系＋阻害薬", eco:2, cov:XC({salmo:1,stec:1,spn:2,prsp:1,gas:2,gbs:2,mssa:2,efc:2,lis:2,hinf:2,blpar:2,mcat:2,ecoli:1,kleb:1,anae:2}), note:"SBT/ABPCの飲み薬にあたる。動物咬傷・難治の中耳炎に。下痢が多い。"},
+  {id:"TAZ/PIPC", name:"タゾバクタム/ピペラシリン", route:"点滴", cls:"抗緑膿菌ペニシリン＋阻害薬", eco:4, cov:XC({salmo:2,stec:2,spn:2,prsp:1,gas:2,gbs:2,mssa:2,efc:2,lis:1,hinf:2,blpar:2,blnar:1,mcat:2,nmen:1,ecoli:2,kleb:2,esbl:1,ampc:1,pae:2,anae:2}), note:"とても広い。緑膿菌と嫌気性菌まで。院内感染・発熱性好中球減少症・腹腔内感染の初期治療に。"},
+  {id:"CEZ", name:"セファゾリン", route:"点滴", cls:"第1世代セフェム", eco:1, cov:XC({stec:1,spn:1,gas:2,gbs:2,mssa:2,cns:1,hinf:1,mcat:1,ecoli:1,kleb:1}), note:"MSSAの第一選択。感受性があれば大腸菌の尿路感染にも。髄液にはほとんど入らない。"},
+  {id:"CEX", name:"セファレキシン", route:"内服", cls:"第1世代セフェム", eco:1, cov:XC({stec:1,gas:2,gbs:2,mssa:2,mcat:1,ecoli:1,kleb:1}), note:"吸収のよい内服セフェム。皮膚感染・骨関節感染の経口治療・尿路感染の仕上げに。"},
+  {id:"CMZ", name:"セフメタゾール", route:"点滴", cls:"セファマイシン系", eco:2, cov:XC({stec:2,spn:1,gas:1,gbs:1,mssa:1,hinf:1,mcat:1,ecoli:2,kleb:2,esbl:2,anae:2}), note:"ESBLに壊されにくく、嫌気性菌にも効く。ESBL産生菌の軽症尿路感染で、カルバペネムを温存する選択肢。AmpCには壊される。"},
+  {id:"CTX", name:"セフォタキシム", route:"点滴", cls:"第3世代セフェム", eco:3, cov:XC({salmo:2,stec:2,spn:2,prsp:2,gas:2,gbs:2,mssa:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,ampc:1}), note:"髄液によく入る。髄膜炎・重症の尿路感染・BLNARに。腸球菌・リステリア・ESBL・緑膿菌には効かない。"},
+  {id:"CTRX", name:"セフトリアキソン", route:"点滴", cls:"第3世代セフェム", eco:3, cov:XC({salmo:2,stec:2,spn:2,prsp:2,gas:2,gbs:2,mssa:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,ampc:1}), note:"1日1〜2回でよく、外来点滴にも。新生児（黄疸・カルシウム輸液）では使わない。胆泥ができることがある。"},
+  {id:"CDTR-PI", name:"セフジトレン ピボキシル", route:"内服", cls:"経口第3世代セフェム", eco:3, cov:XC({stec:1,spn:1,prsp:1,gas:2,gbs:1,mssa:1,hinf:2,blpar:2,blnar:2,mcat:2,ecoli:1,kleb:1}), note:"吸収率が低く（十数％）、体に入る量が少ない。ピボキシル基でカルニチンが減り、低血糖を起こすことがある。日本で使われすぎてきた薬の代表で、第一選択になる場面は少ない。"},
+  {id:"CAZ", name:"セフタジジム", route:"点滴", cls:"第3世代セフェム（抗緑膿菌）", eco:3, cov:XC({salmo:2,stec:2,gas:1,gbs:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,ampc:1,pae:2}), note:"緑膿菌に効く第3世代。そのかわりグラム陽性菌（肺炎球菌・ブドウ球菌）には弱い。"},
+  {id:"CFPM", name:"セフェピム", route:"点滴", cls:"第4世代セフェム", eco:4, cov:XC({salmo:2,stec:2,spn:2,prsp:2,gas:2,gbs:2,mssa:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,esbl:1,ampc:2,pae:2}), note:"陽性菌にも緑膿菌にも届く。AmpCに壊されにくいのでエンテロバクターに。発熱性好中球減少症の初期治療に。"},
+  {id:"MEPM", name:"メロペネム", route:"点滴", cls:"カルバペネム", eco:5, cov:XC({salmo:2,stec:2,spn:2,prsp:2,gas:2,gbs:2,mssa:2,cns:1,efc:1,lis:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:2,kleb:2,esbl:2,ampc:2,pae:2,anae:2}), note:"最も広い切り札。ESBL・AmpCにも効く。使うほどCREとカルバペネム耐性緑膿菌を育てる。MRSA・VRE・マイコプラズマ・CREには効かない。"},
   {id:"VCM", name:"バンコマイシン", route:"点滴", cls:"グリコペプチド（抗MRSA薬）", eco:3, cov:XC({spn:2,prsp:2,gas:2,gbs:2,mssa:1,mrsa:2,cns:2,efc:2,efm:2,lis:1,cdi:2}), note:"グラム陽性菌だけ。MRSA・MRCNS・PRSP髄膜炎に。MSSAにはセファゾリンより劣る。血中濃度を測って量を決める。C. difficileには内服で使う（点滴は腸に届かない）。"},
   {id:"LZD", name:"リネゾリド", route:"点滴/内服", cls:"オキサゾリジノン（抗MRSA薬）", eco:3, cov:XC({spn:2,prsp:2,gas:2,gbs:2,mssa:2,mrsa:2,cns:2,efc:2,efm:2,vre:2,lis:2}), note:"VREにも効く抗MRSA薬。内服でも吸収がよい。長く使うと血小板減少が起こる。切り札として温存する。"},
   {id:"DAP", name:"ダプトマイシン", route:"点滴", cls:"リポペプチド（抗MRSA薬）", eco:3, cov:XC({gas:2,gbs:2,mssa:2,mrsa:2,cns:2,efc:2,efm:2,vre:2}), note:"MRSA・VREの菌血症に。肺のサーファクタントで失活するので、肺炎には使えない。"},
   {id:"CLDM", name:"クリンダマイシン", route:"点滴/内服", cls:"リンコマイシン系", eco:2, cov:XC({spn:1,prsp:1,gas:2,gbs:1,mssa:1,mrsa:1,cns:1,anae:1}), note:"毒素の産生を抑える（重症溶連菌感染で併用）。感受性があればCA-MRSAの皮膚感染に。耐性が増えている。"},
-  {id:"AZM", name:"アジスロマイシン", route:"内服", cls:"マクロライド系", eco:2, cov:XC({gas:1,hinf:1,blpar:1,blnar:1,mcat:2,myco:2}), note:"マイコプラズマ・百日咳・モラクセラに。日本の肺炎球菌は8割以上が耐性で、細菌性肺炎には向かない。MRMPにも効かない。"},
-  {id:"MINO", name:"ミノサイクリン", route:"点滴/内服", cls:"テトラサイクリン系", eco:2, cov:XC({spn:1,prsp:1,mssa:1,mrsa:1,cns:1,hinf:1,mcat:2,ecoli:1,kleb:1,myco:2,mrmp:2}), note:"マクロライド耐性マイコプラズマに。8歳未満では歯の着色・エナメル質の形成不全があり、原則使わない。"},
-  {id:"ST", name:"ST合剤", route:"内服", cls:"サルファ剤", eco:2, cov:XC({spn:1,prsp:1,mssa:2,mrsa:2,cns:1,lis:2,hinf:1,blpar:1,blnar:1,mcat:2,ecoli:1,kleb:1,esbl:1,ampc:1}), note:"感受性があれば尿路感染の内服・CA-MRSAの皮膚感染に。ニューモシスチス肺炎の予防にも。新生児には使わない。"},
-  {id:"GM", name:"ゲンタマイシン", route:"点滴", cls:"アミノグリコシド系", eco:2, cov:XC({mssa:1,efc:1,ecoli:2,kleb:2,esbl:1,ampc:2,cre:1,pae:2}), note:"グラム陰性桿菌に。新生児ではアンピシリンと組み合わせる。腸球菌には単独では効かず、相乗効果のために併用する。腎毒性・耳毒性があり濃度を測る。"},
-  {id:"AMK", name:"アミカシン", route:"点滴", cls:"アミノグリコシド系", eco:2, cov:XC({ecoli:2,kleb:2,esbl:2,ampc:2,cre:1,pae:2}), note:"ゲンタマイシンが効かない陰性菌にも残っていることが多い。ESBL・CREの併用薬の候補。濃度を測る。"},
-  {id:"LVFX", name:"レボフロキサシン", route:"点滴/内服", cls:"ニューキノロン系", eco:4, cov:XC({spn:2,prsp:2,mssa:1,mrsa:1,cns:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:1,kleb:1,esbl:1,ampc:2,cre:1,pae:1,myco:2,mrmp:2}), note:"とても広い。小児では関節への影響の心配から原則避け、使える場面は限られる（小児用はトスフロキサシン）。大腸菌のキノロン耐性も多い。"},
+  {id:"AZM", name:"アジスロマイシン", route:"内服", cls:"マクロライド系", eco:2, cov:XC({salmo:1,gas:1,hinf:1,blpar:1,blnar:1,mcat:2,myco:2}), note:"マイコプラズマ・百日咳・モラクセラに。日本の肺炎球菌は8割以上が耐性で、細菌性肺炎には向かない。MRMPにも効かない。"},
+  {id:"MINO", name:"ミノサイクリン", route:"点滴/内服", cls:"テトラサイクリン系", eco:2, cov:XC({stec:1,spn:1,prsp:1,mssa:1,mrsa:1,cns:1,hinf:1,mcat:2,ecoli:1,kleb:1,myco:2,mrmp:2}), note:"マクロライド耐性マイコプラズマに。8歳未満では歯の着色・エナメル質の形成不全があり、原則使わない。"},
+  {id:"ST", name:"ST合剤", route:"内服", cls:"サルファ剤", eco:2, cov:XC({salmo:1,stec:1,spn:1,prsp:1,mssa:2,mrsa:2,cns:1,lis:2,hinf:1,blpar:1,blnar:1,mcat:2,ecoli:1,kleb:1,esbl:1,ampc:1}), note:"感受性があれば尿路感染の内服・CA-MRSAの皮膚感染に。ニューモシスチス肺炎の予防にも。新生児には使わない。"},
+  {id:"GM", name:"ゲンタマイシン", route:"点滴", cls:"アミノグリコシド系", eco:2, cov:XC({stec:2,mssa:1,efc:1,ecoli:2,kleb:2,esbl:1,ampc:2,cre:1,pae:2}), note:"グラム陰性桿菌に。新生児ではアンピシリンと組み合わせる。腸球菌には単独では効かず、相乗効果のために併用する。腎毒性・耳毒性があり濃度を測る。"},
+  {id:"AMK", name:"アミカシン", route:"点滴", cls:"アミノグリコシド系", eco:2, cov:XC({stec:2,ecoli:2,kleb:2,esbl:2,ampc:2,cre:1,pae:2}), note:"ゲンタマイシンが効かない陰性菌にも残っていることが多い。ESBL・CREの併用薬の候補。濃度を測る。"},
+  {id:"LVFX", name:"レボフロキサシン", route:"点滴/内服", cls:"ニューキノロン系", eco:4, cov:XC({salmo:2,stec:1,spn:2,prsp:2,mssa:1,mrsa:1,cns:1,hinf:2,blpar:2,blnar:2,mcat:2,nmen:2,ecoli:1,kleb:1,esbl:1,ampc:2,cre:1,pae:1,myco:2,mrmp:2}), note:"とても広い。小児では関節への影響の心配から原則避け、使える場面は限られる（小児用はトスフロキサシン）。大腸菌のキノロン耐性も多い。"},
   {id:"MNZ", name:"メトロニダゾール", route:"点滴/内服", cls:"ニトロイミダゾール系", eco:1, cov:XC({anae:2,cdi:2}), note:"嫌気性菌だけを狙う、とても狭い薬。腹腔内感染でセフェムと組み合わせる。C. difficile腸炎の内服治療にも。"}
 ];
 const XDRUG = Object.fromEntries(XDRUGS.map(d=>[d.id,d]));
@@ -904,6 +914,11 @@ const CARDS = {
   id:["切開排膿","膿のかたまり（膿瘍）は血流がなく、抗菌薬が届きにくい。切って出すのが治療の柱。出した膿はグラム染色と培養に出し、MRSAかどうかを確かめる。"],
   dtest:["D試験","エリスロマイシン耐性・クリンダマイシン感性のブドウ球菌で行う。2枚のディスクを並べ、クリンダマイシンの阻止円がエリスロマイシン側でD字に欠ければ誘導耐性（陽性）。その場合はクリンダマイシンを使わない。"],
   esbl:["ESBLの見分け方","第3世代セフェム（CTX・CAZ）が耐性で、クラブラン酸を足すと阻止円が広がればESBL。ESBLはセファマイシン（CMZ）とカルバペネムは壊せない。重症でなければCMZでカルバペネムを温存する。"],
+  scx:["便培養","下痢の原因菌を探す。便には腸内細菌がたくさんいるので、選択培地（SS寒天・ソルビトール・マッコンキー寒天など）で犯人だけを拾い上げる。どの菌を探したいかを検査室に伝えるのが大事。"],
+  nts:["サルモネラを治療する子","健康な子のサルモネラ胃腸炎は抗菌薬なしで治り、抗菌薬はかえって菌を出す期間を長くする。3か月未満・免疫不全・重い基礎疾患・菌血症のある子は治療する。"],
+  invivo:["試験管と体の中はちがう","サルモネラは細胞の中に入りこむ。第1・第2世代セフェムとアミノグリコシドは試験管でS（感性）と出ても治療では効かないので、結果に出ていても使わない。"],
+  stx:["志賀毒素（ベロ毒素）","腸管出血性大腸菌がつくる毒素。腸の血管を傷つけて血便を、全身では腎臓などの血管を傷つけてHUSを起こす。下痢止めと抗菌薬で増えるおそれがある。"],
+  hus:["溶血性尿毒症症候群（HUS）","溶血性貧血（破砕赤血球）・血小板減少・急性腎障害の3つ。腸管出血性大腸菌の下痢が始まって数日〜2週間後に起こる。血便のあとは血算と腎機能をくり返し見る。"],
   prior:["前回の培養を見る","くり返す感染では、前回の菌と感受性がいちばんの手がかり。最近の抗菌薬・入院・予防内服は耐性菌の危険因子。初期治療を前回の感受性に合わせ、今回の培養で確かめる。"]
 };
 /* 検査カードの「くわしく」。カードを押すと出る。表やスコアは学習用に要点をまとめたもの。実際は施設の基準にしたがう。 */
@@ -948,6 +963,17 @@ const CARDX = {
     ${ul(["<b>4・5群</b>が培養に適した検体。1〜3群は唾液が多く、口の常在菌を見ているだけになりやすい","6群は好中球減少の患者や、気管吸引・気管支鏡の検体なら評価してよい"])}
     <h3>見た目の分類（Miller & Jones）</h3>${tb(["分類","見た目","評価"],[["M1","唾液、膿なし","不良"],["M2","粘性で、膿が少し","不良寄り"],["P1","膿が1/3以下","良"],["P2","膿が1/3〜2/3","良"],["P3","膿が2/3以上","良"]])}
     <h3>正しい採り方</h3>${ul(["抗菌薬の<b>前</b>に採る","朝起きてすぐなど、痰がたまっているとき。歯みがきはせず、水で数回<b>うがい</b>してから","深い咳で出た痰を滅菌容器へ。唾液は出さない","出にくいときは3%食塩水の吸入で誘発（喀痰誘発）、体位ドレナージやタッピングも","採ったら<b>2時間以内</b>に検査室へ。無理なら冷蔵（肺炎球菌は室温で自己融解し、常在菌は増える）","幼児は出せないことが多い。重症なら気管吸引や血液培養・胸水培養で補う"])}`,
+  scx: `<h3>便の選択培地</h3>${tb(["培地","ねらう菌","見え方"],[["SS寒天","サルモネラ・赤痢菌","乳糖を分解しないので無色。サルモネラは硫化水素で中心が黒い"],["ソルビトール・マッコンキー寒天","O157","ふつうの大腸菌はピンク、O157はソルビトールを分解せず無色"],["CCDA寒天など（微好気・42℃）","カンピロバクター","灰色の平たいコロニー。ふつうの条件では育たない"],["TCBS寒天","腸炎ビブリオ","海産物のあと。青緑のコロニー"]])}
+    ${ul(["便の普通の培養だけでは、どの病原菌も見つからないことがある。<b>疑う菌を検査室に伝える</b>","抗菌薬の前に採る。下痢の便をそのまま容器へ（おむつに染みる前に）","腸管出血性大腸菌は、培養と一緒に便の<b>志賀毒素</b>（または遺伝子）検査も出す"])}`,
+  nts: `<h3>非チフス性サルモネラ：抗菌薬を使うか</h3>${tb(["子ども","抗菌薬"],[["健康な子の胃腸炎","<b>使わない</b>（菌を出す期間が長くなる）"],["3か月未満","使う（菌血症・髄膜炎になりやすい）"],["免疫不全・鎌状赤血球症・慢性腸疾患","使う"],["菌血症","使う（髄膜炎・骨髄炎がないか確かめる）"]])}
+    <h3>治療期間の目安</h3>${tb(["状態","期間"],[["菌血症のない胃腸炎（治療が要る子）","3〜7日"],["菌血症（ほかに病巣なし）","10〜14日"],["髄膜炎・骨髄炎","4〜6週"]])}
+    ${ul(["初期治療は第3世代セフェム（セフトリアキソン・セフォタキシム）","感受性を見て、アンピシリン・アモキシシリン・ST合剤などへ"])}`,
+  invivo: `<h3>試験管でSでも効かない組み合わせ</h3>${tb(["菌","Sと出ても使わない薬","理由"],[["サルモネラ・赤痢菌","第1・第2世代セフェム、セファマイシン、アミノグリコシド","細胞の中の菌に届かず、治療で効かない"],["腸球菌","セフェム系、アミノグリコシド単独、ST合剤","自然耐性・体の中では効かない"],["リステリア","セフェム系","自然耐性"]])}
+    ${ul(["感受性検査は「試験管の中で増えるのを止めるか」を見ている","菌の居場所（細胞の中・髄液・膿瘍）に薬が届くかは別に考える"])}`,
+  stx: `<h3>腸管出血性大腸菌の見つけ方</h3>${tb(["検査","わかること"],[["便培養（ソルビトール・マッコンキー寒天）","O157を拾う。O26・O111などはソルビトールを分解するので見分けられない"],["便の志賀毒素検査・遺伝子検査","O157以外の血清型も見つかる"],["O157抗原（LPS）の迅速検査","便から短時間で"],["血清のO157 LPS抗体","便から菌が見つからないHUSで役立つ"]])}
+    <h3>治療</h3>${ul(["水分と電解質（点滴を含む）","<b>下痢止め（ロペラミドなど）・麻薬系の痛み止めは使わない</b>","抗菌薬は原則使わない。菌が壊れて毒素が出てHUSが増えるという報告がある（日本では発症早期のホスホマイシンを使う施設もある）","診断したら直ちに保健所へ届け出る（3類感染症）"])}`,
+  hus: `<h3>HUSの3つ</h3>${tb(["項目","検査"],[["溶血性貧血","ヘモグロビン低下・LDH上昇・ハプトグロビン低下・<b>破砕赤血球</b>"],["血小板減少","15万/μL未満"],["急性腎障害","クレアチニン上昇・尿量減少・血尿/蛋白尿"]])}
+    ${ul(["血便の数日〜2週間後、下痢がよくなってきたころに起こることが多い","凝固（PT・APTT）はふつう正常。DICとの違い","治療は支持療法：水分・電解質・血圧の管理、必要なら<b>透析</b>","血小板輸血は出血や処置のとき以外は避ける","脳症（けいれん・意識障害）に注意。退院後も高血圧・蛋白尿を何年か見る"])}`,
   us: `<h3>見るところ</h3>${ul(["水腎症（腎盂の拡張）・尿管の拡張","腎臓の大きさ・左右差・形の異常（重複腎盂など）","膀胱壁の厚さ・残尿","急性期の腎の腫大や、膿瘍"])}
     <h3>その後の検査</h3>${tb(["状況","考える検査"],[["はじめての有熱性尿路感染でエコー正常","ふつうは経過観察"],["エコー異常・2回目の有熱性尿路感染・大腸菌以外の菌","排尿時膀胱尿道造影（VCUG）で膀胱尿管逆流を探す"],["腎の傷が心配","回復期（4〜6か月後）のDMSAシンチ"]])}`,
   hear: `<h3>髄膜炎のあとの聴力検査</h3>${ul(["細菌性髄膜炎の後遺症でいちばん多いのが感音難聴（肺炎球菌で多い）","退院前、遅くとも1か月以内に聴性脳幹反応（ABR）や耳音響放射（OAE）で確認","高度難聴は蝸牛が骨化する前に人工内耳を考えるので、早く見つけることが大事","デキサメタゾンはインフルエンザ菌b型の難聴を減らす（肺炎球菌でも初回投与前・同時に使う）"])}`,
@@ -1796,6 +1822,205 @@ const CASES = [
     ]},
     {type:"end"}
   ]
+},
+{
+  id:"salmo", cc:"生後2か月・発熱と血の混じる下痢", title:"カメを飼っているお兄ちゃん", sub:"生後2か月・サルモネラ腸炎と菌血症", bgm:"night", scene:"er",
+  pt:{name:"ひなたくん", age:"生後2か月", sex:"男児", wt:5.2, face:{girl:false,hair:"#3A2A2A",shirt:"#9BD36A"}},
+  vit:{t:38.9, hr:172, spo2:99, day:0},
+  steps:[
+    {type:"story", lines:[
+      ["nar","日曜の夜。生後2か月のひなたくんが熱を出して、救急外来にやってきた。"],
+      ["fam","昨日から下痢が1日8回くらい。緑っぽい便に、血と粘液が混じっています。ミルクの飲みも悪くて……。"],
+      ["nurse","体温38.9℃、心拍172。少しぐったりしています。おむつは半日で2枚です。"],
+      ["fam","6歳のお兄ちゃんも、先週おなかをこわしました。お兄ちゃんはミドリガメを飼っていて……。"],
+      ["doc:think","生後2か月の発熱と血便。家族の胃腸炎とカメ……。"]
+    ]},
+    {type:"choice", axis:0, ask:"①どんな子？ この子で特に気をつけることは？", opts:[
+      {t:"3か月未満なので、腸の菌が血液に入りやすい（菌血症・髄膜炎）", ok:true, fb:"そのとおり。3か月未満の細菌性腸炎、とくにサルモネラは、菌血症・髄膜炎・骨髄炎になりやすい。年長児の胃腸炎とは別に考える。"},
+      {t:"母乳やミルクの免疫があるので、重い感染にはならない", fb:"3か月未満は免疫が未熟で、腸の菌が血液に入りやすい。発熱もある。"},
+      {t:"胃腸炎なので、脱水にだけ気をつければよい", fb:"脱水は大事。でも3か月未満の発熱と血便では、菌血症・髄膜炎を考える。"},
+      {t:"ロタウイルスワクチンを飲んでいるので、細菌性腸炎は考えなくてよい", fb:"ロタワクチンは細菌には効かない。血便と発熱は細菌性腸炎を考えるサイン。"}
+    ]},
+    {type:"choice", axis:2, ask:"③どの菌？ 発熱・血便・カメを飼っている家族。まず考えるのは？", opts:[
+      {t:"サルモネラ（カメなどの爬虫類が持っている）", ok:true, fb:"そのとおり。ミドリガメなどの爬虫類はサルモネラを高い割合で持っている。触った手から、家族の中でうつる。卵や鶏肉も原因の代表。"},
+      {t:"カンピロバクター（カメが持っている）", fb:"カンピロバクターは鶏肉の生焼けが原因の代表。カメといえばサルモネラ。"},
+      {t:"ロタウイルス", fb:"ロタは白っぽい水様便と嘔吐が中心で、血便は少ない。"},
+      {t:"腸管出血性大腸菌（O157）", fb:"牛肉の生焼けなどから。熱は低めのことが多い。カメからはサルモネラ。"}
+    ]},
+    {type:"order", card:"scx", ask:"出す検査は？", tests:[
+      {id:"scx", n:"便培養（サルモネラを探すと伝える）", s:"便をそのまま容器へ", v:"must", why:"犯人の菌と感受性を確かめる。疑う菌を検査室に伝えると、合う培地で探してくれる。"},
+      {id:"bcx", n:"血液培養", s:"採血", v:"must", pain:1, why:"3か月未満の細菌性腸炎は菌血症が多い。抗菌薬の前に。"},
+      {id:"cbc", n:"血算・CRP・電解質", s:"同じ穿刺で", v:"ok", why:"炎症と、脱水による電解質の乱れを確かめる。"},
+      {id:"ua", n:"尿検査・尿培養（カテーテル尿）", s:"導尿", v:"ok", pain:1, why:"乳児の発熱では尿路感染も確かめる。"},
+      {id:"lp", n:"腰椎穿刺", s:"髄液検査", v:"ok", pain:2, why:"ぐったりした3か月未満の発熱。血液培養が陽性なら必ず行う。"},
+      {id:"rota", n:"ロタウイルス迅速検査", s:"便の検査", v:"no", why:"血便と高熱で細菌性腸炎らしい。陽性でも治療は変わらない。"},
+      {id:"axr", n:"腹部X線", s:"レントゲン", v:"no", why:"腸重積や腸閉塞を疑う所見（間欠的な不機嫌・嘔吐・おなかのしこり）がなければ要らない。"}
+    ]},
+    {type:"story", lines:[
+      ["doc","便と血液の培養を採った。3か月未満で、発熱してぐったりしている。"],
+      ["doc:think","健康な年長児のサルモネラ腸炎なら抗菌薬は使わない。でもこの子は、菌血症・髄膜炎になりやすい年齢。"],
+      ["puku","詳細版のマップに「サルモネラ」がいるよ。光らせてみよう！"]
+    ]},
+    {type:"abx", x:true, axis:3, card:"nts", title:"初期治療（3か月未満のサルモネラ疑い）", ask:"菌血症・髄膜炎の心配がある生後2か月。培養は採った。点滴を1つ選ぼう（詳細版マップ）。", targets:["salmo"], max:1,
+      answers:{
+        "CTRX":["best","正解。3か月未満のサルモネラ腸炎は、菌血症・髄膜炎に備えて第3世代セフェムで治療する。髄液にもよく届く。"],
+        "CTX":["best","正解。第3世代セフェムで、髄液にもよく届く。3か月未満の初期治療の定番。"],
+        "ABPC":["ng","アンピシリンが効かないサルモネラもいる。感受性が出るまでは確実な薬で。"],
+        "AMPC":["ng","飲み薬で、しかも耐性のこともある。菌血症が心配な乳児は点滴で始める。"],
+        "CEZ":["ng","第1世代セフェムは、試験管で効いても、サルモネラの治療では効かない。"],
+        "CMZ":["ng","セファマイシンもサルモネラの治療では頼れない。"],
+        "GM":["ng","アミノグリコシドは細胞の中に隠れるサルモネラに届かず、効かない。"],
+        "AMK":["ng","アミノグリコシドは細胞の中のサルモネラに効かない。"],
+        "AZM":["ng","年長児の腸炎に飲み薬として使うことはあるが、菌血症が心配な乳児の初期治療は点滴の第3世代セフェム。"],
+        "LVFX":["ok","サルモネラによく効くが、小児では原則避ける薬。乳児の第一選択にしない。"],
+        "MEPM":["broad","効くけれど切り札。第3世代セフェムで足りる。"],
+        "TAZ/PIPC":["broad","広すぎる。嫌気性菌や緑膿菌まで要らない。"],
+        "CFPM":["broad","緑膿菌まで要らない。第3世代セフェムで足りる。"]
+      }},
+    {type:"bottle", card:"bcx", title:"血液培養ボトル", lead:"ふ卵器の時間を進めて、ボトルを見守ろう。", pos:15},
+    {type:"micro", card:"gram", title:"陽性ボトルのグラム染色", specimen:"陽性ボトルの培養液", org:"gnr", wbc:0, seed:91,
+      q:{ask:"見えた菌は？", opts:[
+        {t:"グラム陰性桿菌 → 腸の菌（サルモネラ）が血液に入った", ok:true, fb:"そのとおり。赤い棒の菌。便からの菌が腸の壁を越えて血液に入った（菌血症）と考える。"},
+        {t:"グラム陰性桿菌 → 皮膚の菌が混じっただけ（汚染）", fb:"皮膚の常在菌はグラム陽性球菌が多い。血液からグラム陰性桿菌が出たら本物と考える。"},
+        {t:"グラム陽性球菌の房 → 黄色ブドウ球菌", fb:"赤く染まった棒の形。グラム陰性桿菌。"},
+        {t:"グラム陰性球菌 → 髄膜炎菌", fb:"丸ではなく棒の形。"}
+      ]}},
+    {type:"story", day:1, scene:"ward", vit:{t:38.0,hr:156}, lines:[
+      ["nar","入院2日目。熱は少し下がり、ミルクを少しずつ飲めるようになってきた。"],
+      ["doc","血液から菌が出たので、腰椎穿刺もした。髄液はきれいで、髄膜炎はなさそう。"],
+      ["lab","便の培養に、SS寒天で中心の黒いコロニーが出ています。血液の菌と同じものです。"]
+    ]},
+    {type:"plate", card:"scx", title:"便培養", media:"ss", org:"salmo", seed:93,
+      read:"SS寒天で、無色で中心が黒いコロニー（乳糖を分解せず、硫化水素をつくる）。同定：サルモネラ（O4群）。血液の菌と同じ。",
+      q:{ask:"コロニーの中心が黒いのは、何のしるし？", opts:[
+        {t:"硫化水素をつくった（サルモネラの特徴）", ok:true, fb:"そのとおり。硫化水素が培地の鉄と反応して黒くなる。乳糖を分解しないので周りは無色。"},
+        {t:"乳糖を分解した", fb:"乳糖を分解するとピンク〜赤になる。サルモネラは分解しないので無色。"},
+        {t:"血液を溶かした（溶血）", fb:"溶血は血液寒天で見る。SS寒天の黒は硫化水素。"},
+        {t:"古くなって菌が死んだ", fb:"黒いのは菌がつくった硫化水素のしるし。"}
+      ]}},
+    {type:"disk", card:"invivo", title:"感受性検査（ディスク法）", org:"サルモネラ", seed:95, day:2,
+      disks:[["ABPC",21,"S"],["CTX",30,"S"],["ST",26,"S"],["CEZ",24,"S"],["GM",19,"S"],["LVFX",31,"S"]],
+      lead:"血液と便のサルモネラ。ディスクを読もう。",
+      q:{ask:"セファゾリンとゲンタマイシンもS（感性）と出た。サルモネラの治療に使える？", opts:[
+        {t:"使わない。試験管でSでも、体の中では効かない", ok:true, fb:"そのとおり。サルモネラは細胞の中に入りこむ。第1・第2世代セフェムとアミノグリコシドは治療では効かないので、Sと出ていても使わない。"},
+        {t:"どちらも使える。Sなら効く", fb:"試験管の中と体の中はちがう。この2つはサルモネラの治療で効かない。"},
+        {t:"ゲンタマイシンだけ使える", fb:"アミノグリコシドは細胞の中に届きにくく、サルモネラには効かない。"},
+        {t:"セファゾリンだけ使える", fb:"第1世代セフェムはサルモネラの治療で効かない。"}
+      ]}},
+    {type:"abx", x:true, card:"deesc", title:"治療を狭くする", day:2, ask:"サルモネラ（アンピシリン感性）。熱は下がってきた。点滴をどうする？（詳細版マップ）", targets:["salmo"], known:"salmo", max:1,
+      sus:{"ABPC":"S","AMPC":"S","SBT/ABPC":"S","AMPC/CVA":"S","TAZ/PIPC":"S","CEZ":"S","CEX":"S","CMZ":"S","CTX":"S","CTRX":"S","CAZ":"S","CFPM":"S","MEPM":"S","ST":"S","GM":"S","AMK":"S","LVFX":"S"},
+      answers:{
+        "ABPC":["best","正解。アンピシリン感性なら、いちばん狭い点滴に替えられる。状態が落ち着けば内服（アモキシシリンなど）にして仕上げる。"],
+        "CTRX":["ok","効いているので続けてもよい。でも感性の狭い薬がある。"],
+        "CTX":["ok","効いているが、もっと狭い感性の薬がある。"],
+        "AMPC":["ok","内服にするのはもう少し落ち着いてから。まずは点滴のアンピシリン。"],
+        "ST":["ok","感性で、内服の仕上げの候補。乳児の菌血症の点滴治療はアンピシリンで。"],
+        "CEZ":["ng","Sと出ていても、第1世代セフェムはサルモネラの治療で効かない。"],
+        "CEX":["ng","第1世代セフェムはサルモネラの治療で効かない。"],
+        "CMZ":["ng","Sと出ていても、サルモネラの治療では頼れない。"],
+        "GM":["ng","試験管ではSでも、細胞の中のサルモネラには効かない。"],
+        "AMK":["ng","アミノグリコシドは細胞の中のサルモネラには効かない。"],
+        "LVFX":["ok","効くが、小児では原則避ける。アンピシリンが感性ならそちらで。"],
+        "MEPM":["broad","感性だけど、切り札を使う理由はない。"],
+        "TAZ/PIPC":["broad","広すぎる。狭い感性の薬がある。"],
+        "CFPM":["broad","広すぎる。狭い感性の薬がある。"]
+      }},
+    {type:"choice", day:4, vit:{t:36.9,hr:138}, ask:"生後2か月のサルモネラ菌血症。髄膜炎や骨の感染はない。治療期間は？", opts:[
+      {t:"合計10〜14日（髄膜炎や骨髄炎なら4〜6週）", ok:true, fb:"そのとおり。病巣のない菌血症なら10〜14日が目安。髄膜炎・骨髄炎があれば4〜6週と長くなる。"},
+      {t:"熱が下がったので、合計3日で止める", fb:"菌血症のある乳児では短すぎる。再発や、骨・髄膜への広がりが心配。"},
+      {t:"便の培養が陰性になるまで続ける", fb:"便から菌が出る期間は数週〜数か月続くことがあり、治療期間の目安にはしない。"},
+      {t:"合計6週間", fb:"それは髄膜炎や骨髄炎のとき。この子にはない。"}
+    ]},
+    {type:"choice", cat:"tx", ask:"6歳のお兄ちゃんは先週下痢をしたが、いまは元気。便からサルモネラが出るかもしれない。どうする？", opts:[
+      {t:"お兄ちゃんに抗菌薬は飲ませない。手洗いを徹底し、カメを飼い続けるか見直す", ok:true, fb:"そのとおり。健康な子の軽いサルモネラ腸炎や保菌は抗菌薬で治療しない。かえって菌を出す期間が長くなる。5歳未満の子がいる家では、爬虫類を飼わないことが勧められる。"},
+      {t:"便培養をして、陽性なら抗菌薬で除菌する", fb:"健康な子の保菌に抗菌薬は使わない。菌を出す期間が長くなり、耐性菌も育てる。"},
+      {t:"カメを消毒すれば、飼い続けても大丈夫", fb:"カメの多くはサルモネラを腸に持っていて、消毒ではなくならない。"},
+      {t:"ひなたくんが治るまで、お兄ちゃんは学校を休む", fb:"元気で下痢がなければ登校できる。大事なのはトイレのあとやカメを触ったあとの手洗い。"}
+    ]},
+    {type:"end"}
+  ]
+},
+{
+  id:"stec", cc:"5歳・強い腹痛と血便", title:"焼肉の3日後", sub:"5歳・腸管出血性大腸菌O157とHUS", bgm:"day", scene:"clinic",
+  pt:{name:"さくらちゃん", age:"5歳", sex:"女児", wt:18, face:{girl:true,hair:"#4A3020",shirt:"#FFB3C7"}},
+  vit:{t:37.4, hr:124, spo2:99, day:0},
+  steps:[
+    {type:"story", lines:[
+      ["nar","月曜の朝。さくらちゃんがおなかを押さえて、小児科外来にやってきた。"],
+      ["fam","おととい（土曜）から水みたいな下痢で、昨日から真っ赤な血が出るんです。おなかが痛いと泣いて、トイレに何度も行きます。"],
+      ["nurse","体温37.4℃、心拍124。熱はあまりありません。おなかを触ると痛がります。"],
+      ["fam","木曜の夜に、家族で焼肉に行きました。この子はお肉を自分で焼いて……。"],
+      ["doc:think","熱は低いのに、強い腹痛と血便。焼肉の3日後……。"]
+    ]},
+    {type:"choice", axis:2, ask:"③どの菌？ 熱は低いのに強い腹痛と血便。焼肉の3日後。まず考えるのは？", opts:[
+      {t:"腸管出血性大腸菌（O157など）", ok:true, fb:"そのとおり。熱は出ないか低めで、強い腹痛と血便が特徴。生焼けの牛肉・生野菜・井戸水などから、少ない菌の量でうつる。"},
+      {t:"サルモネラ", fb:"サルモネラは高い熱が出ることが多い。卵・鶏肉・カメなどから。"},
+      {t:"カンピロバクター", fb:"鶏肉の生焼けが原因の代表で、熱が出やすい。熱が低く腹痛の強い血便は、O157を先に考える。"},
+      {t:"ロタウイルス", fb:"ロタは嘔吐と白っぽい水様便が中心で、血便は少ない。"}
+    ]},
+    {type:"order", card:"scx", ask:"出す検査は？", tests:[
+      {id:"scx", n:"便培養（O157を探すと伝える）", s:"便をそのまま容器へ", v:"must", why:"ソルビトール・マッコンキー寒天でO157を探す。伝えないと見逃すことがある。"},
+      {id:"stx", n:"便の志賀毒素（ベロ毒素）検査", s:"便の検査", v:"must", why:"O157以外の血清型も、毒素で見つかる。"},
+      {id:"hus", n:"血算・腎機能・LDH・血液の顕微鏡", s:"採血", v:"must", pain:1, why:"溶血性尿毒症症候群（HUS）の始まりを見逃さない。脱水の程度も。"},
+      {id:"ua", n:"尿検査", s:"紙コップにおしっこ", v:"ok", why:"血尿・蛋白尿はHUSの手がかり。"},
+      {id:"aus", n:"腹部エコー", s:"おなかに機械を当てる", v:"ok", why:"大腸の壁の厚さ。腸重積や虫垂炎との区別。"},
+      {id:"bcx", n:"血液培養", s:"採血", v:"no", pain:1, why:"熱がほとんどなく、腸管出血性大腸菌が血液に入ることはまれ。"},
+      {id:"ct", n:"腹部CT", s:"CTスキャン", v:"no", why:"被ばくがあり、エコーで足りる。"}
+    ]},
+    {type:"choice", axis:3, cat:"tx", card:"stx", ask:"④治療は？ お母さん「下痢止めと、抗菌薬をください」", opts:[
+      {t:"水分・点滴で脱水を治す。下痢止めは使わず、抗菌薬もふつうは使わない", ok:true, fb:"そのとおり。下痢止めは毒素を腸にためて、HUSや重症化を増やす。抗菌薬で菌が壊れると毒素が出て、HUSが増えるという報告があり、海外では使わないのが原則。日本では発症早期にホスホマイシンを使う施設もあるが、HUSを防ぐ確かな証拠はない。"},
+      {t:"腸によく届くレボフロキサシンを飲む", fb:"キノロンなどで菌が壊れると毒素がたくさん出て、HUSが増えるおそれがある。"},
+      {t:"下痢止め（ロペラミド）で腸を休ませる", fb:"腸の動きを止めると毒素が腸にとどまり、HUSや重症化が増える。使わない。"},
+      {t:"血便があるので、セフトリアキソンの点滴を始める", fb:"O157は抗菌薬で治す病気ではない。脱水と合併症（HUS）の管理が中心。"}
+    ]},
+    {type:"story", day:1, scene:"ward", vit:{t:37.2,hr:118}, lines:[
+      ["nar","脱水が強く、入院して点滴を始めた。"],
+      ["lab","便の毒素検査は志賀毒素2型が陽性。ソルビトール・マッコンキー寒天に、無色のコロニーが出ています。"]
+    ]},
+    {type:"plate", card:"stx", title:"便培養", media:"smac", org:"stec", seed:97,
+      read:"ソルビトール・マッコンキー寒天で、ピンクのコロニー（ふつうの大腸菌）に混じって無色のコロニー。無色のコロニーを調べると、O157抗原が陽性。同定：腸管出血性大腸菌O157。",
+      q:{ask:"O157のコロニーが無色なのはなぜ？", opts:[
+        {t:"O157はソルビトールを分解できないから", ok:true, fb:"そのとおり。ふつうの大腸菌はソルビトールを分解して酸を出し、ピンクになる。O157は分解しないので無色。これで拾い上げる。"},
+        {t:"O157は乳糖を分解できないから", fb:"O157も乳糖は分解する。ふつうのマッコンキー寒天ではほかの大腸菌と同じピンクで見分けられない。だからソルビトールの培地を使う。"},
+        {t:"毒素で培地の色が壊れたから", fb:"毒素ではなく、ソルビトールを分解しないことが理由。"},
+        {t:"弱っていて育ちが悪いから", fb:"大きさではなく色で見分ける。ソルビトールを分解しないので無色。"}
+      ]}},
+    {type:"choice", ask:"O157と確定した。まずすることは？", opts:[
+      {t:"保健所へ直ちに届け出る。家族の体調を確かめ、便の検査を相談する", ok:true, fb:"そのとおり。腸管出血性大腸菌感染症は3類感染症で、診断したら直ちに届け出る。保健所が家族の検便や感染源を調べる。"},
+      {t:"家族全員に抗菌薬を予防のために飲ませる", fb:"予防の抗菌薬は使わない。大事なのは手洗い、トイレの消毒、生肉の扱い。"},
+      {t:"届け出は7日以内にすればよい", fb:"3類感染症は、診断したら直ちに届け出る。"},
+      {t:"入院して隔離すれば、届け出は要らない", fb:"隔離していても届け出は必要。食中毒として広がっていないかを保健所が調べる。"}
+    ]},
+    {type:"story", day:4, vit:{t:36.9,hr:126}, lines:[
+      ["nar","入院5日目。下痢と腹痛は落ち着いてきた。でも、さくらちゃんの顔色が青白く、まぶたがむくんでいる。"],
+      ["nurse","昨日からおしっこがほとんど出ていません。少しうとうとしています。"],
+      ["lab","ヘモグロビン7.8 g/dL、血小板4.2万/μL、クレアチニン1.6 mg/dL、LDH 2,800 U/L。血液の顕微鏡で、こわれた赤血球（破砕赤血球）が見えます。PTとAPTTは正常です。"]
+    ]},
+    {type:"choice", card:"hus", ask:"この結果で考えるのは？", opts:[
+      {t:"溶血性尿毒症症候群（HUS）：溶血性貧血・血小板減少・急性腎障害", ok:true, fb:"そのとおり。志賀毒素が腎臓などの細い血管の内側を傷つけ、そこで赤血球がこわれ、血小板が使われ、腎臓が働かなくなる。下痢がよくなってきたころに起こるのが要注意。"},
+      {t:"脱水で血が濃くなっただけ", fb:"脱水ならヘモグロビンはむしろ高く見える。血小板減少と破砕赤血球は説明できない。"},
+      {t:"抗菌薬を使わなかったので、菌が血液に入った", fb:"HUSは毒素による血管の障害で、菌が血液に入るわけではない。抗菌薬を使わなかったせいではない。"},
+      {t:"播種性血管内凝固（DIC）", fb:"HUSではPT・APTTはふつう正常。破砕赤血球・腎障害・血小板減少の組み合わせはHUS。"}
+    ]},
+    {type:"choice", cat:"tx", ask:"HUSの治療は？", opts:[
+      {t:"水分と電解質を細かく管理し、尿が出なければ透析。腎臓の専門チームと連携する", ok:true, fb:"そのとおり。HUSに効く特別な薬はなく、支持療法が中心。尿が出ない・高カリウム・体液過剰が進めば透析。けいれんや意識の変化（脳症）にも注意する。"},
+      {t:"血小板が少ないので、すぐ血小板輸血", fb:"血小板輸血は血栓を増やすおそれがあり、出血や処置のとき以外は原則しない。"},
+      {t:"いまから抗菌薬で菌をやっつければ治る", fb:"毒素による血管の障害なので、抗菌薬では治らない。"},
+      {t:"むくんでいるが、水分を多めに入れて尿を出す", fb:"尿が出ないときに水分を入れすぎると、肺水腫や高血圧になる。入る量と出る量を細かく見る。"}
+    ]},
+    {type:"story", day:16, vit:{t:36.7,hr:98}, lines:[
+      ["nar","2週間後。数回の透析のあと、おしっこがたくさん出るようになり、血小板も元にもどった。"],
+      ["fam","さくら、ごはんを全部食べました！ 本当にありがとうございました。"],
+      ["doc","HUSのあとは、高血圧や蛋白尿など腎臓の後遺症が出ることがある。退院してからも何年か外来で見ていこう。"]
+    ]},
+    {type:"choice", ask:"お母さん「幼稚園はいつから行けますか？」", opts:[
+      {t:"医師が感染のおそれがないと認めたら（便の培養で陰性を確かめることが多い）", ok:true, fb:"そのとおり。腸管出血性大腸菌感染症は学校保健安全法の第3種。医師が感染のおそれがないと認めるまで出席停止。手洗いはそのあとも続ける。"},
+      {t:"熱がないので、明日から行ける", fb:"熱では決めない。便に菌が残っていると、園でうつることがある。"},
+      {t:"便から菌がいなくなるまで抗菌薬を飲み続け、それから行く", fb:"除菌のための抗菌薬は使わない。菌は自然に出なくなる。"},
+      {t:"決まりで、1か月は行けない", fb:"決まった日数はない。医師が判断する。"}
+    ]},
+    {type:"end"}
+  ]
 }
 ];
 const CASE = Object.fromEntries(CASES.map(c=>[c.id,c]));
@@ -1872,7 +2097,7 @@ function Title(){
       <g transform="translate(40 92) rotate(12)"><rect width="34" height="14" rx="7" fill="#E0457A" stroke="#2E2545" stroke-width="2.5"/></g></svg></div>
     <div class="tsay">熱の原因はどこにいる？　検査で犯人の菌をしぼりこみ、<br>いちばんぴったりの抗菌薬で治そう。</div>
     <div class="tmenu">
-      <button class="tbtn go" data-act="menu"><span class="ti">${ICON.go}</span><span><b>症例をはじめる</b><i>はじめの章と8つの症例</i></span></button>
+      <button class="tbtn go" data-act="menu"><span class="ti">${ICON.go}</span><span><b>症例をはじめる</b><i>はじめの章と10の症例</i></span></button>
       <button class="tbtn" data-act="map"><span class="ti">${ICON.map}</span><span><b>スペクトラム・マップ</b><i>抗菌薬が、どの菌に効くかを見る（基本版・詳細版）</i></span></button>
       <button class="tbtn" data-act="cards"><span class="ti">${ICON.card}</span><span><b>検査カード</b><i>集めた検査の知識を見返す</i></span></button>
     </div>
@@ -1922,7 +2147,7 @@ function CardsScreen(){
 function openCardX(k){ const v=CARDS[k]; openModal(`<div class="cxm"><span class="eyebrow">検査カード</span><h2>${v[0]}</h2><p class="lead">${v[1]}</p>${CARDX[k]||""}</div>`); }
 function MapScreen(){
   const mode = store.get("mapmode","basic")==="x" ? "x" : "basic";
-  app.innerHTML = topBar("スペクトラム・マップ", `<div class="seg" role="tablist"><button role="tab" data-mode="basic" aria-selected="${mode==="basic"}">基本<small>菌14・薬16</small></button><button role="tab" data-mode="x" aria-selected="${mode==="x"}">詳細<small>菌26・薬26・耐性菌</small></button></div>`) + `<div class="wrap"><div class="stage" id="mapHost"></div></div>`;
+  app.innerHTML = topBar("スペクトラム・マップ", `<div class="seg" role="tablist"><button role="tab" data-mode="basic" aria-selected="${mode==="basic"}">基本<small>菌14・薬16</small></button><button role="tab" data-mode="x" aria-selected="${mode==="x"}">詳細<small>菌28・薬26・耐性菌</small></button></div>`) + `<div class="wrap"><div class="stage" id="mapHost"></div></div>`;
   app.onclick = (e)=>{ if(e.target.closest("[data-back]")) return back();
     const m=e.target.closest("[data-mode]"); if(m && m.dataset.mode!==mode){ store.set("mapmode", m.dataset.mode); sfx("tap"); MapScreen(); window.scrollTo(0,0); } };
   const data = mode==="x" ? DATA_X : DATA_BASIC;
@@ -2403,7 +2628,7 @@ const STEP = {
     $("#rt",st).addEventListener("input", upd); upd();
   },
   choice(s, st){
-    quiz(st, s, "quiz", ()=>{ if(s.card) gainCard(s.card); st.insertAdjacentHTML("beforeend", nextBtn()); });
+    quiz(st, s, s.cat||"quiz", ()=>{ if(s.card) gainCard(s.card); st.insertAdjacentHTML("beforeend", nextBtn()); });
   },
   order(s, st){
     st.innerHTML = `<div class="sheet"><span class="eyebrow">検査オーダー</span><h2>${s.ask}</h2><p class="lead">痛い検査には <span style="color:#3B8BEB;font-weight:800">なみだ</span> マーク。子どもの負担も考えよう。</p>
@@ -2705,10 +2930,10 @@ function drawPlate(cv, s, h){
   x.clearRect(0,0,W,H);
   x.fillStyle="rgba(46,37,69,.18)"; x.beginPath(); x.arc(cx+3,cy+5,r+6,0,7); x.fill();
   x.fillStyle="#E9EEF5"; x.strokeStyle="#2E2545"; x.lineWidth=3; x.beginPath(); x.arc(cx,cy,r+6,0,7); x.fill(); x.stroke();
-  const agar = s.media==="btb" ? "#5E9FB8" : "#B4232F";
-  const ag=x.createRadialGradient(cx-30,cy-30,10,cx,cy,r); ag.addColorStop(0, s.media==="btb"?"#78B6C8":"#C83A44"); ag.addColorStop(1, agar);
+  const MED = { btb:["#78B6C8","#5E9FB8","BTB寒天"], ss:["#F2B48A","#E08F62","SS寒天"], smac:["#E27BA6","#C24D7E","SMAC寒天"] }[s.media] || ["#C83A44","#B4232F","血液寒天"];
+  const ag=x.createRadialGradient(cx-30,cy-30,10,cx,cy,r); ag.addColorStop(0, MED[0]); ag.addColorStop(1, MED[1]);
   x.fillStyle=ag; x.beginPath(); x.arc(cx,cy,r,0,7); x.fill();
-  x.fillStyle="rgba(255,255,255,.85)"; x.font="800 12px sans-serif"; x.fillText(s.media==="btb"?"BTB寒天":"血液寒天", cx-30, cy+r-14);
+  x.fillStyle="rgba(255,255,255,.85)"; x.font="800 12px sans-serif"; x.textAlign="center"; x.fillText(MED[2], cx, cy+r-14); x.textAlign="left";
   // 4分画画線
   const pts=[]; const zones=[[-1,-1,70],[1,-1,26],[1,1,10],[-1,1,4]];
   zones.forEach((z,zi)=>{ for(let i=0;i<z[2];i++){ const a=R(), b=R(); const px=cx+z[0]*(18+a*90), py=cy+z[1]*(18+b*90); if(Math.hypot(px-cx,py-cy)<r-14) pts.push([px,py,zi]); } });
@@ -2716,7 +2941,11 @@ function drawPlate(cv, s, h){
   const k = Math.max(0, Math.min(1, (h-lag)/(full-lag)));
   if(k<=0) return;
   pts.forEach((p,i)=>{ const big = p[2]>=2 ? 1 : .7; const rr = (s.org==="spn"?3.2:5.2)*k*big*(0.8+((i*37)%10)/25);
-    if(s.media==="btb"){ x.fillStyle=`rgba(240,214,70,${.35*k})`; x.beginPath(); x.arc(p[0],p[1],rr*2.2,0,7); x.fill(); x.fillStyle="#F2D43A"; x.strokeStyle="#B89B10"; }
+    if(s.media==="ss"){ x.fillStyle="rgba(250,240,228,.92)"; x.strokeStyle="#B9A48E"; x.lineWidth=.8; x.beginPath(); x.arc(p[0],p[1],rr,0,7); x.fill(); x.stroke();
+      if(h>=16){ x.fillStyle=`rgba(25,20,20,${Math.min(.9,(h-16)/10+.3)})`; x.beginPath(); x.arc(p[0],p[1],rr*.5,0,7); x.fill(); } return; }
+    if(s.media==="smac"){ const pink = i%3===0; x.fillStyle = pink ? "#B0185C" : "rgba(252,240,244,.95)"; x.strokeStyle = pink ? "#7A0F40" : "#C9A3B4";
+      if(pink){ x.save(); x.fillStyle=`rgba(150,20,80,${.25*k})`; x.beginPath(); x.arc(p[0],p[1],rr*1.8,0,7); x.fill(); x.restore(); } }
+    else if(s.media==="btb"){ x.fillStyle=`rgba(240,214,70,${.35*k})`; x.beginPath(); x.arc(p[0],p[1],rr*2.2,0,7); x.fill(); x.fillStyle="#F2D43A"; x.strokeStyle="#B89B10"; }
     else if(s.org==="spn"){ x.fillStyle=`rgba(80,140,70,${.55*k})`; x.beginPath(); x.arc(p[0],p[1],rr*2.4,0,7); x.fill(); x.fillStyle="#C8CCC4"; x.strokeStyle="#7F877A"; }
     else { if(s.org==="sa"){ x.fillStyle=`rgba(255,215,215,${.45*k})`; x.beginPath(); x.arc(p[0],p[1],rr*1.9,0,7); x.fill(); } x.fillStyle="#F4E2B0"; x.strokeStyle="#B89B60"; }
     x.lineWidth=.8; x.beginPath(); x.arc(p[0],p[1],rr,0,7); x.fill(); x.stroke();
