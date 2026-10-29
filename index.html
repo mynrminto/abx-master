@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>抗菌薬マスター</title>
+<title>感染症マスター</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2811,7 +2811,7 @@ function Title(){
   const p=prog(), n=CASES.filter(c=>p[c.id]).length;
   const t=document.createElement("div"); t.className="title";
   t.innerHTML=`<div class="tstage">
-    <div class="tlogo"><span class="series"><span class="k1">触</span>って<span class="k2">覚</span><span class="k3">え</span><span class="k4">る</span>！</span><span class="name">抗菌薬マスター</span><span class="tag">こどもの感染症診療 ― 検査で犯人を追いつめる</span></div>
+    <div class="tlogo"><span class="series"><span class="k1">触</span>って<span class="k2">覚</span><span class="k3">え</span><span class="k4">る</span>！</span><span class="name">感染症マスター</span><span class="tag">こどもの感染症診療 ― 検査から抗菌薬まで</span></div>
     <div class="tcast"><img class="tm" src="${ART("mascot_happy")}" alt=""><img src="${ART("doctor_normal")}" alt="いぶき先生"><svg class="tbugs" viewBox="0 0 90 120" aria-hidden="true">
       <g transform="translate(6 18)">${[[10,10],[24,4],[38,10],[16,22],[30,20],[44,24],[24,34],[8,30]].map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="7" fill="#6A3FC8" stroke="#2E2545" stroke-width="2.5"/>`).join("")}</g>
       <g transform="translate(14 74) rotate(-18)"><rect width="40" height="15" rx="7.5" fill="#E0457A" stroke="#2E2545" stroke-width="2.5"/><circle cx="12" cy="7" r="2" fill="#2E2545"/><circle cx="24" cy="7" r="2" fill="#2E2545"/></g>
@@ -2839,7 +2839,7 @@ const ICON = {
 function topBar(title, extra){ return `<div class="top"><div class="wrap"><div class="bar"><button class="back" data-back>‹ もどる</button><h1>${title}</h1>${sndBtn()}</div>${extra||""}</div></div>`; }
 function Menu(){
   const p=prog();
-  app.innerHTML = topBar("抗菌薬マスター") + `<div class="wrap">
+  app.innerHTML = topBar("感染症マスター") + `<div class="wrap">
     <div class="home-hero"><div class="ey">Case files</div><h1>犯人の菌を追え</h1><p>子どもの発熱を、検査で一歩ずつ解き明かす。初期治療は広めに、結果が出たら狭く。</p><img src="${ART("doctor_happy")}" alt=""></div>
     <div class="list">${CASES.map((c,i)=>`<button class="case" data-chap="${c.id}" data-case="${c.id}"><span class="cthumb">${ptPic(c,(p[c.id]||{}).stars?"well":"sick")}</span><span class="tx"><i>${c.id==="basic"?"はじめに":"症例 "+i}${state.ret&&state.ret.caseId===c.id?' <span class="resume">続きから</span>':""}</i><b>${c.title}</b><small>${c.pt.name}・${c.cc}</small></span><span class="st">${[1,2,3].map(k=>STAR((p[c.id]||{}).stars>=k)).join("")}</span></button>`).join("")}</div>
     <div class="sec-h">ふりかえり</div>
